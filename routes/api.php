@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('auth/login', 'App\Http\Controllers\Api\AuthController@login');
+
+Route::group(['middleware' =>['apiJWT']], function(){
+    Route::get("users","App\Http\Controllers\Api\UserController@index");
+
+    Route::post('login', 'App\Http\Controllers\Api\AuthController@login');
+    Route::post('logout', 'App\Http\Controllers\Api\AuthController@logout');
+    Route::post('refresh', 'App\Http\Controllers\Api\AuthController@refresh');
+    Route::post('me', 'App\Http\Controllers\Api\AuthController@me');
 });
