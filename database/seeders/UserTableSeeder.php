@@ -16,7 +16,13 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i = 0; $i< 5; $i++)
+        User::create([
+            'name' => 'Miqueias',
+            'email' => 'miqueias@email.com',
+            'password' => Hash::make('123456789')
+        ]);
+
+        for($i = 0; $i< 7; $i++)
         {
             $str = Str::random(10);
             User::create([
