@@ -10,7 +10,7 @@ class DespesaController extends Controller
 {
     public function index()
     {
-        $despesas = Despesa::where('user_id','=',auth()->user()->id)->get()->toJson(JSON_PRETTY_PRINT);
+        $despesas = Despesa::where('user_id','=',auth()->user()->id)->get();
         return response($despesas, 200);
     }
 
@@ -50,10 +50,11 @@ class DespesaController extends Controller
     {
         if (Despesa::where('id', $id)->exists()) {
 
-            $despesas = Despesa::find($id);
-            $despesas->valor = is_null($request->valor) ? $despesas->valor : $request->valor;
-            $despesas->data_vencimento = is_null($request->data_vencimento) ? $despesas->data_vencimento : $request->data_vencimento;
-            $despesas->save();
+            $despesa = Despesa::find($id);
+            $despesa->nome = is_null($request->nome) ? $despesa->nome : $request->nome;
+            $despesa->valor = is_null($request->valor) ? $despesa->valor : $request->valor;
+            $despesa->data_vencimento = is_null($request->data_vencimento) ? $despesa->data_vencimento : $request->data_vencimento;
+            $despesa->save();
 
             return response()->json([
                 "message" => "Despesa atualizada!"
