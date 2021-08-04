@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => __('auth.signup_success'),
-            'status' => true
+            'code' => env('CODE_SUCCESS')
         ], 201);
     }
 
@@ -41,7 +41,10 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => env('CODE_AUTH_FAIL')
+            ], 401);
         }
 
         return $this->respondWithToken($token);

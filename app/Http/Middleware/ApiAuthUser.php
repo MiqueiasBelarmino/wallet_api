@@ -24,15 +24,18 @@ class ApiAuthUser extends BaseMiddleware
         } catch (Exception $exception) {
             if ($exception instanceof TokenInvalidException){
                 return response()->json([
-                    'status' => 'Token is Invalid'
+                    'message' => 'Token inválido',
+                    'status' => env('CODE_AUTH_FAIL')
                 ]);
             }else if ($exception instanceof TokenExpiredException){
                 return response()->json([
-                    'status' => 'Token is Expired'
+                    'message' => 'Token expirado',
+                    'status' => env('CODE_AUTH_FAIL')
                 ]);
             }else{
                 return response()->json([
-                    'status' => 'Authorization Token not found'
+                    'message' => 'Token não encontrado',
+                    'status' => env('CODE_AUTH_FAIL')
                 ]);
             }
         }

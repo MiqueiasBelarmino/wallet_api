@@ -21,7 +21,8 @@ class ReceitaController extends Controller
             return response()->json($receita, 200);
         } else {
             return response()->json([
-                "message" => "Receita não encontrada!"
+                "message" => "Receita não encontrada!",
+                "status" => env('CODE_NOT_FOUND')
             ], 404);
         }
     }
@@ -42,7 +43,8 @@ class ReceitaController extends Controller
         $receita->save();
 
         return response()->json([
-            "message" => "Receita registrada!"
+            "message" => "Receita registrada!",
+            "status" => env('CODE_SUCCESS')
         ], 201);
     }
 
@@ -57,11 +59,13 @@ class ReceitaController extends Controller
             $receita->save();
 
             return response()->json([
-                "message" => "Receita atualizada!"
+                "message" => "Receita atualizada!",
+                "status" => env('CODE_SUCCESS')
             ], 200);
         } else {
             return response()->json([
-                "message" => "Receita não encontrada"
+                "message" => "Receita não encontrada",
+                "status" => env('CODE_NOT_FOUND')
             ], 404);
         }
     }
@@ -74,11 +78,13 @@ class ReceitaController extends Controller
             $receita->delete();
 
             return response([
-                "message" => "Receita removida!"
+                "message" => "Receita removida!",
+                "status" => env('CODE_SUCCESS')
             ], 202);
         } else {
             return response()->json([
-                "message" => "Receita não encontrada"
+                "message" => "Receita não encontrada",
+                "status" => env('CODE_NOT_FOUND')
             ], 404);
         }
     }
