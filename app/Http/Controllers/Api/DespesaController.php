@@ -8,9 +8,15 @@ use Illuminate\Http\Request;
 
 class DespesaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $despesas = Despesa::where('user_id','=',auth()->user()->id)->get();
+        $despesas = [];
+        if(isset($request->vencimento) && !empty($request->vencimento)){
+            $despesas = Despesa::where('user_id','=',auth()->user()->id)
+            ->where('data_vencimento','<=',$request->vencimento)->get();
+        }else{
+            $despesas = Despesa::where('user_id','=',auth()->user()->id)->get();
+        }
         return response($despesas, 200);
     }
 

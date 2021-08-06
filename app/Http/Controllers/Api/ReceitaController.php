@@ -8,9 +8,15 @@ use Illuminate\Http\Request;
 
 class ReceitaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $receitas = Receita::where('user_id','=',auth()->user()->id)->get();
+        $receitas = [];
+        if(isset($request->vencimento) && !empty($request->vencimento)){
+            $receitas = Receita::where('user_id','=',auth()->user()->id)
+            ->where('data_entrada','<=',$request->vencimento)->get();
+        }else{
+            $receitas = Receita::where('user_id','=',auth()->user()->id)->get();
+        }
         return response($receitas, 200);
     }
 

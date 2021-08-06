@@ -28,14 +28,14 @@ Route::group(['middleware' =>['apiJWT']], function(){
     Route::post('refresh', 'App\Http\Controllers\Api\AuthController@refresh');
 
     /*rotas de despesas*/
-    Route::get("despesas","App\Http\Controllers\Api\DespesaController@index");
+    Route::post("despesas","App\Http\Controllers\Api\DespesaController@index");
     Route::get("despesas/delete/{id}","App\Http\Controllers\Api\DespesaController@delete");
     Route::get("despesas/show/{id}","App\Http\Controllers\Api\DespesaController@show");
     Route::post("despesas/create","App\Http\Controllers\Api\DespesaController@create");
     Route::post("despesas/update/{id}","App\Http\Controllers\Api\DespesaController@update");
 
     /*rotas de receitas*/
-    Route::get("receitas","App\Http\Controllers\Api\ReceitaController@index");
+    Route::post("receitas","App\Http\Controllers\Api\ReceitaController@index");
     Route::get("receitas/delete/{id}","App\Http\Controllers\Api\ReceitaController@delete");
     Route::get("receitas/show/{id}","App\Http\Controllers\Api\ReceitaController@show");
     Route::post("receitas/create","App\Http\Controllers\Api\ReceitaController@create");
