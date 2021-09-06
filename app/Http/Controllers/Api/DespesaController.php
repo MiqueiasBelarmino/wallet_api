@@ -13,7 +13,8 @@ class DespesaController extends Controller
         $despesas = [];
         if(isset($request->vencimento) && !empty($request->vencimento)){
             $despesas = Despesa::where('user_id','=',auth()->user()->id)
-            ->where('data_vencimento','<=',$request->vencimento)->get();
+            ->whereYear('data_vencimento','=',date('Y',strtotime($request->vencimento)))
+            ->whereMonth('data_vencimento','=',date('m',strtotime($request->vencimento)))->get();
         }else{
             $despesas = Despesa::where('user_id','=',auth()->user()->id)->get();
         }

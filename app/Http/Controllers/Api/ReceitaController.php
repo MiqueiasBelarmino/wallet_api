@@ -13,7 +13,8 @@ class ReceitaController extends Controller
         $receitas = [];
         if(isset($request->vencimento) && !empty($request->vencimento)){
             $receitas = Receita::where('user_id','=',auth()->user()->id)
-            ->where('data_entrada','<=',$request->vencimento)->get();
+            ->whereYear('data_entrada','=',date('Y',strtotime($request->vencimento)))
+            ->whereMonth('data_entrada','=',date('m',strtotime($request->vencimento)))->get();
         }else{
             $receitas = Receita::where('user_id','=',auth()->user()->id)->get();
         }
