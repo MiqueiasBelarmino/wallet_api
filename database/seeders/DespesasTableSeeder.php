@@ -24,6 +24,13 @@ class DespesasTableSeeder extends Seeder
                 'user_id' => User::first()->id
             ]);
         }
+        Despesa::create([
+            'nome' => 'Aluguel',
+            'valor' => 600,
+            'data_vencimento' => date('Y-m-14'),
+            'recorrencia' => env('RECORRENCIA_MENSAL'),
+            'user_id' => User::first()->id
+        ]);
         for($i = 11; $i < 20; $i++){
             Despesa::create([
                 'nome' => Str::random(10),
@@ -32,5 +39,11 @@ class DespesasTableSeeder extends Seeder
                 'user_id' => rand(2, 6)
             ]);
         }
+        Despesa::create([
+            'nome' => 'dadssad',
+            'valor' => 100,
+            'data_vencimento' => date('Y-'.(date('m')+1).'-d'),
+            'user_id' => User::first()->id
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Receita;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class ReceitaController extends Controller
@@ -11,13 +12,50 @@ class ReceitaController extends Controller
     public function index(Request $request)
     {
         $receitas = [];
-        if(isset($request->vencimento) && !empty($request->vencimento)){
-            $receitas = Receita::where('user_id','=',auth()->user()->id)
-            ->whereYear('data_entrada','=',date('Y',strtotime($request->vencimento)))
-            ->whereMonth('data_entrada','=',date('m',strtotime($request->vencimento)))->get();
-        }else{
-            $receitas = Receita::where('user_id','=',auth()->user()->id)->get();
+        if (isset($request->vencimento) && !empty($request->vencimento)) {
+            $hoje = strtotime(date('Y-m'));
+            $requestDate = strtotime(date('Y-m', strtotime($request->vencimento)));
+            if ($requestDate > $hoje) {
+                $receitas = Receita::where('user_id', '=', auth()->user()->id)
+                    ->whereYear('data_entrada', '>=', date('Y'))
+                    ->whereMonth('data_entrada', '>=', date('m'))
+                    ->whereYear('data_entrada', '<=', date('Y', strtotime($request->vencimento)))
+                    ->whereMonth('data_entrada', '<=', date('m', strtotime($request->vencimento)))->get();
+
+                $inicial = $hoje;
+                $final = $requestDate;
+            } else if ($requestDate < $hoje) {
+                $receitas = Receita::where('user_id', '=', auth()->user()->id)
+                    ->whereYear('data_entrada', '>=', date('Y', strtotime($request->vencimento)))
+                    ->whereMonth('data_entrada', '>=', date('m', strtotime($request->vencimento)))
+                    ->whereYear('data_entrada', '<=', date('Y'))
+                    ->whereMonth('data_entrada', '<=', date('m'))->get();
+
+                $inicial = $requestDate;
+                $final = $hoje;
+            } else {
+                $receitas = Receita::where('user_id', '=', auth()->user()->id)
+                    ->whereYear('data_entrada', '=', date('Y', strtotime($request->vencimento)))
+                    ->whereMonth('data_entrada', '=', date('m', strtotime($request->vencimento)))->get();
+                $inicial = $requestDate;
+                $final = $requestDate;
+            }
+            $d_array = new Collection();
+            foreach ($receitas as $d) {
+                if (intval($d->recorrencia) == intval(env('RECORRENCIA_MENSAL'))) {
+                    $max = month_count(date('Y-m', $inicial), date('Y-m', $final));
+                    for ($i = 0; $i < $max; $i++) {
+                        $d_array->push($d);
+                    }
+                }
+            }
+            foreach ($d_array as $da) {
+                $receitas->push($da);
+            }
+        } else {
+            $receitas = Receita::where('user_id', '=', auth()->user()->id)->get();
         }
+
         return response($receitas, 200);
     }
 

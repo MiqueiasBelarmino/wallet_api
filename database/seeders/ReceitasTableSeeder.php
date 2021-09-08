@@ -25,6 +25,15 @@ class ReceitasTableSeeder extends Seeder
                 'user_id' => User::first()->id
             ]);
         }
+
+        Receita::create([
+            'nome' => 'Salario',
+            'valor' => 1741,
+            'data_entrada' => date('Y-m-06'),
+            'recorrencia' => env('RECORRENCIA_MENSAL'),
+            'user_id' => User::first()->id
+        ]);
+
         for($i = 11; $i < 20; $i++){
             Receita::create([
                 'nome' => Str::random(10),
