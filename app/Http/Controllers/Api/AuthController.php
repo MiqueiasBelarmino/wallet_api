@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => __('auth.signup_success'),
-            'code' => env('CODE_SUCCESS')
+            'status' => true
         ], 201);
     }
 
@@ -43,7 +43,7 @@ class AuthController extends Controller
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json([
                 'message' => 'Unauthorized',
-                'status' => env('CODE_AUTH_FAIL')
+                'status' => false
             ], 401);
         }
 
@@ -87,6 +87,7 @@ class AuthController extends Controller
             'user' => auth()->user(),
             'access_token' => $token,
             'token_type' => 'bearer',
+            'status' => true,
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }

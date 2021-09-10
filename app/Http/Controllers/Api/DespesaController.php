@@ -57,7 +57,10 @@ class DespesaController extends Controller
             $despesas = Despesa::where('user_id', '=', auth()->user()->id)->get();
         }
 
-        return response($d_array, 200);
+        return response([
+            'despesas'=> $despesas,
+            'status'=> true
+        ], 200);
     }
 
     public function show($id)
@@ -68,7 +71,7 @@ class DespesaController extends Controller
         } else {
             return response()->json([
                 "message" => "Despesa não encontrada!",
-                "status" => env('CODE_NOT_FOUND')
+                "status" => false
             ], 404);
         }
     }
@@ -90,7 +93,7 @@ class DespesaController extends Controller
 
         return response()->json([
             "message" => "Despesa registrada!",
-            "status" => env('CODE_SUCCESS')
+            "status" => true
         ], 201);
     }
 
@@ -106,12 +109,12 @@ class DespesaController extends Controller
 
             return response()->json([
                 "message" => "Despesa atualizada!",
-                "status" => env('CODE_SUCCESS')
+                "status" => true
             ], 200);
         } else {
             return response()->json([
                 "message" => "Despesa não encontrada",
-                "status" => env('CODE_NOT_FOUND')
+                "status" => false
             ], 404);
         }
     }
@@ -125,12 +128,12 @@ class DespesaController extends Controller
 
             return response([
                 "message" => "Despesa removida!",
-                "status" => env('CODE_SUCCESS')
+                "status" => true
             ], 202);
         } else {
             return response()->json([
                 "message" => "Despesa não encontrada",
-                "status" => env('CODE_NOT_FOUND')
+                "status" => false
             ], 404);
         }
     }
