@@ -87,6 +87,7 @@ class DespesaController extends Controller
         $despesa = new Despesa;
         $despesa->nome = $request->nome;
         $despesa->valor = $request->valor;
+        $despesa->recorrencia = $request->recorrencia;
         $despesa->data_vencimento = $request->data_vencimento;
         $despesa->user_id = auth()->user()->id;
         $despesa->save();
@@ -104,6 +105,7 @@ class DespesaController extends Controller
             $despesa = Despesa::find($id);
             $despesa->nome = is_null($request->nome) ? $despesa->nome : $request->nome;
             $despesa->valor = is_null($request->valor) ? $despesa->valor : $request->valor;
+            $despesa->recorrencia = is_null($request->recorrencia) ? $despesa->recorrencia : $request->recorrencia;
             $despesa->data_vencimento = is_null($request->data_vencimento) ? $despesa->data_vencimento : $request->data_vencimento;
             $despesa->save();
 

@@ -12,6 +12,8 @@ class ReceitaController extends Controller
     public function index(Request $request)
     {
         $receitas = [];
+        $inicial = '';
+        $final = '';
         if (isset($request->vencimento) && !empty($request->vencimento)) {
             $hoje = strtotime(date('Y-m'));
             $requestDate = strtotime(date('Y-m', strtotime($request->vencimento)));
@@ -86,6 +88,7 @@ class ReceitaController extends Controller
         $receita = new Receita;
         $receita->nome = $request->nome;
         $receita->valor = $request->valor;
+        $receita->recorrencia = $request->recorrencia;
         $receita->data_entrada = $request->data_entrada;
         $receita->user_id = auth()->user()->id;
         $receita->save();
@@ -103,6 +106,7 @@ class ReceitaController extends Controller
             $receita = Receita::find($id);
             $receita->nome = is_null($request->nome) ? $receita->nome : $request->nome;
             $receita->valor = is_null($request->valor) ? $receita->valor : $request->valor;
+            $receita->recorrencia = is_null($request->recorrencia) ? $receita->recorrencia : $request->recorrencia;
             $receita->data_entrada = is_null($request->data_entrada) ? $receita->data_entrada : $request->data_entrada;
             $receita->save();
 

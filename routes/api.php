@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('auth/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::post('login', 'App\Http\Controllers\Api\AuthController@login');
+Route::any('me', 'App\Http\Controllers\Api\AuthController@me')->name('me');
 
 Route::group(['middleware' =>['apiJWT']], function(){
     /*rotas de usuário/auth*/

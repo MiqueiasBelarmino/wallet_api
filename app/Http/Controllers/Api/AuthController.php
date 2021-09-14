@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -90,5 +91,15 @@ class AuthController extends Controller
             'status' => true,
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    public function me(Request $request)
+    {
+        $user = JWTAuth::user();
+        if (count((array)$user) > 0) {
+            return response()->json(['status' => 'success', 'user' => $user]);
+        } else {
+            return response()->json(['status' => 'fail'], 401);
+        }
     }
 }
