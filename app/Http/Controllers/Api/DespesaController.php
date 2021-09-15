@@ -9,57 +9,93 @@ use Illuminate\Http\Request;
 
 class DespesaController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $despesas = [];
+    //     $inicial = '';
+    //     $final = '';
+    //     if (isset($request->vencimento) && !empty($request->vencimento)) {
+    //         $hoje = strtotime(date('Y-m'));
+    //         $requestDate = strtotime(date('Y-m', strtotime($request->vencimento)));
+    //         if ($requestDate > $hoje) {
+    //             $despesas = Despesa::where('user_id', '=', auth()->user()->id)
+    //                 ->whereYear('data_vencimento', '>=', date('Y'))
+    //                 ->whereMonth('data_vencimento', '>=', date('m'))
+    //                 ->whereYear('data_vencimento', '<=', date('Y', strtotime($request->vencimento)))
+    //                 ->whereMonth('data_vencimento', '<=', date('m', strtotime($request->vencimento)))->get();
+
+    //             $inicial = $hoje;
+    //             $final = $requestDate;
+    //         } else if ($requestDate < $hoje) {
+    //             $despesas = Despesa::where('user_id', '=', auth()->user()->id)
+    //                 ->whereYear('data_vencimento', '>=', date('Y', strtotime($request->vencimento)))
+    //                 ->whereMonth('data_vencimento', '>=', date('m', strtotime($request->vencimento)))
+    //                 ->whereYear('data_vencimento', '<=', date('Y'))
+    //                 ->whereMonth('data_vencimento', '<=', date('m'))->get();
+    //             $inicial = $requestDate;
+    //             $final = $hoje;
+    //         } else {
+    //             $despesas = Despesa::where('user_id', '=', auth()->user()->id)
+    //                 ->whereYear('data_vencimento', '=', date('Y', strtotime($request->vencimento)))
+    //                 ->whereMonth('data_vencimento', '=', date('m', strtotime($request->vencimento)))->get();
+    //             $inicial = $requestDate;
+    //             $final = $requestDate;
+    //         }
+    //         $d_array = new Collection;
+    //         foreach ($despesas as $d) {
+    //             if (intval($d->recorrencia) == intval(env('RECORRENCIA_MENSAL'))) {
+    //                 $max = month_count(date('Y-m', $inicial), date('Y-m', $final));
+    //                 for ($i = 0; $i < $max; $i++) {
+    //                     $d_array->push($d);
+    //                 }
+    //             }
+    //         }
+    //         foreach ($d_array as $da) {
+    //             $despesas->push($da);
+    //         }
+    //     } else {
+    //         $despesas = Despesa::where('user_id', '=', auth()->user()->id)->get();
+    //     }
+
+    //     return response([
+    //         'despesas'=> $despesas,
+    //         'status'=> true
+    //     ], 200);
+    // }
+
     public function index(Request $request)
     {
-        $despesas = [];
-        $inicial = '';
-        $final = '';
-        if (isset($request->vencimento) && !empty($request->vencimento)) {
-            $hoje = strtotime(date('Y-m'));
-            $requestDate = strtotime(date('Y-m', strtotime($request->vencimento)));
-            if ($requestDate > $hoje) {
-                $despesas = Despesa::where('user_id', '=', auth()->user()->id)
-                    ->whereYear('data_vencimento', '>=', date('Y'))
-                    ->whereMonth('data_vencimento', '>=', date('m'))
-                    ->whereYear('data_vencimento', '<=', date('Y', strtotime($request->vencimento)))
-                    ->whereMonth('data_vencimento', '<=', date('m', strtotime($request->vencimento)))->get();
 
-                $inicial = $hoje;
-                $final = $requestDate;
-            } else if ($requestDate < $hoje) {
-                $despesas = Despesa::where('user_id', '=', auth()->user()->id)
-                    ->whereYear('data_vencimento', '>=', date('Y', strtotime($request->vencimento)))
-                    ->whereMonth('data_vencimento', '>=', date('m', strtotime($request->vencimento)))
-                    ->whereYear('data_vencimento', '<=', date('Y'))
-                    ->whereMonth('data_vencimento', '<=', date('m'))->get();
-                $inicial = $requestDate;
-                $final = $hoje;
-            } else {
-                $despesas = Despesa::where('user_id', '=', auth()->user()->id)
-                    ->whereYear('data_vencimento', '=', date('Y', strtotime($request->vencimento)))
-                    ->whereMonth('data_vencimento', '=', date('m', strtotime($request->vencimento)))->get();
-                $inicial = $requestDate;
-                $final = $requestDate;
-            }
-            $d_array = new Collection;
-            foreach ($despesas as $d) {
-                if (intval($d->recorrencia) == intval(env('RECORRENCIA_MENSAL'))) {
-                    $max = month_count(date('Y-m', $inicial), date('Y-m', $final));
-                    for ($i = 0; $i < $max; $i++) {
-                        $d_array->push($d);
-                    }
+        
+        $despesas = [];
+        if (isset($request->vencimento) && !empty($request->vencimento)) {
+            $requestDate = strtotime(date('Y-m', strtotime($request->vencimento)));
+
+            $despesas = Despesa::where('user_id', '=', auth()->user()->id)
+                ->whereYear('data_vencimento', '<=', date('Y', strtotime($request->vencimento)))
+                ->whereMonth('data_vencimento', '<=', date('m', strtotime($request->vencimento)))->get();
+        } else {
+            $despesas = Despesa::where('user_id', '=', auth()->user()->id)
+                ->whereYear('data_vencimento', '<=', date('Y'))
+                ->whereMonth('data_vencimento', '<=', date('m'))->get();
+            $requestDate = strtotime(date('Y-m'));
+
+        }
+        $d_array = new Collection();
+        foreach ($despesas as $d) {
+            if (intval($d->recorrencia) == intval(env('RECORRENCIA_MENSAL'))) {
+                $max = month_count(date('Y-m', strtotime($d->data_vencimento)), date('Y-m', $requestDate));
+                for ($i = 0; $i < $max; $i++) {
+                    $d_array->push($d);
                 }
             }
-            foreach ($d_array as $da) {
-                $despesas->push($da);
-            }
-        } else {
-            $despesas = Despesa::where('user_id', '=', auth()->user()->id)->get();
         }
-
+        foreach ($d_array as $da) {
+            $despesas->push($da);
+        }
         return response([
-            'despesas'=> $despesas,
-            'status'=> true
+            'despesas' => $despesas,
+            'status' => true
         ], 200);
     }
 
